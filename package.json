@@ -1,6 +1,6 @@
 {
   "name": "request",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -8,6 +8,6 @@
   "author": "AyTea14",
   "license": "ISC",
   "dependencies": {
-    "undici": "^5.6.1"
+    "undici": "^4.x"
   }
 }
