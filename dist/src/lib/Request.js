@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Request = void 0;
 const undici_1 = __importDefault(require("undici"));
 const path_1 = __importDefault(require("path"));
+const package_json_1 = require("../../package.json");
 const defaultRedirectCount = 21;
 const seconds = 1000;
 class Request {
@@ -14,7 +15,7 @@ class Request {
     data;
     sendDataAs;
     reqHeaders;
-    ua;
+    ua = `request/${package_json_1.version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
     coreOptions;
     timeoutDuration = 30 * seconds;
     redirectCount = defaultRedirectCount;
