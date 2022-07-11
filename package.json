@@ -7,6 +7,9 @@
   "keywords": [],
   "author": "AyTea14",
   "license": "ISC",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "undici": "^4.x"
   },
