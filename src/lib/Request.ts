@@ -17,7 +17,7 @@ export class Request {
     private data: any;
     private sendDataAs: any;
     private reqHeaders: Record<string, string>;
-    private ua: string;
+    private ua: string = `request/${version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
     private coreOptions: UndiciOptions;
     private timeoutDuration: number = 30 * seconds;
     private redirectCount: number = defaultRedirectCount;
