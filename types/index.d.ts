@@ -61,5 +61,4 @@ declare namespace req {
 declare function req(url: string | URL): req.Request;
 
 export = req;
-export = { request: req };
 export default req;
