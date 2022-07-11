@@ -1,9 +1,9 @@
 {
   "name": "request",
-  "version": "1.0.8",
+  "version": "1.0.8-ts",
   "description": "",
-  "main": "dist/index.ts",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.ts",
+  "types": "dist/src/index.d.ts",
   "keywords": [],
   "author": "AyTea14",
   "license": "ISC",
