@@ -9,7 +9,7 @@ declare class RequestClass extends Promise<Dispatcher.ResponseData> {
     private streamEnabled: boolean;
     private compressionEnabled: boolean;
     private ua: string;
-    private coreOptions: req.UndiciOptions;
+    private coreOptions: request.UndiciOptions;
     private timeoutDuration: number;
     private redirectCount: number;
 
@@ -25,8 +25,8 @@ declare class RequestClass extends Promise<Dispatcher.ResponseData> {
     header(name: string, value: string): this;
     timeout(timeout: number): this;
     agent(...fragments: string[]): this;
-    options(obj: req.UndiciOptions): this;
-    options<T extends keyof req.UndiciOptions>(key: T, value: req.UndiciOptions[T]): this;
+    options(obj: request.UndiciOptions): this;
+    options<T extends keyof request.UndiciOptions>(key: T, value: request.UndiciOptions[T]): this;
     auth(token: string, type?: string): this;
     follow(count: number | boolean): this;
 
@@ -50,7 +50,7 @@ declare class RequestClass extends Promise<Dispatcher.ResponseData> {
     send(): Promise<Dispatcher.ResponseData>;
 }
 
-declare namespace req {
+declare namespace request {
     export class Request extends RequestClass {}
     export type Response = Dispatcher.ResponseData;
     export type UndiciOptions = Partial<
@@ -58,7 +58,7 @@ declare namespace req {
             Partial<Pick<Dispatcher.RequestOptions, "method">>
     >;
 }
-declare function req(url: string | URL): req.Request;
+declare function request(url: string | URL): request.Request;
 
-export = req;
-export default req;
+export { request };
+export default request;
