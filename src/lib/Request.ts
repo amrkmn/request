@@ -15,7 +15,7 @@ export class Request {
     private httpMethod: HttpMethod = "GET";
     private data: Record<string, string> | string | null = null;
     private sendDataAs: string | null = null;
-    private ua = `request/1.0.1 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+    private ua = `request/1.1.6 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
 
     private reqHeaders: Record<string, string> = {};
     private coreOptions: UndiciOptions = {};
@@ -183,4 +183,5 @@ export class Request {
     }
 }
 
-export const request = (url: string) => new Request(url);
+const request = (url: string) => new Request(url);
+export { request };
