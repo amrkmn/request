@@ -1,2 +1,2 @@
-export { Request, UndiciOptions, request as default, request } from './lib/Request.js';
+export { Request, UndiciOptions, request } from './lib/Request.js';
 import 'undici/types/dispatcher';

@@ -1,2 +1,2 @@
-export * from "./lib/Request";
-export { request as default } from "./lib/Request";
+import { Request, UndiciOptions, request } from "./lib/Request";
+export { request, Request, UndiciOptions };
