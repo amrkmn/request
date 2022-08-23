@@ -36,6 +36,6 @@ declare class Request {
     then(...args: any[]): Promise<Dispatcher.ResponseData>;
     catch(...args: any[]): Promise<Dispatcher.ResponseData>;
 }
-declare const request: (url: string) => Request;
+declare const request: (url: string | URL) => Request;
 
 export { Request, UndiciOptions, request };
