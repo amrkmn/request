@@ -11,7 +11,7 @@ var Request = class {
   httpMethod = "GET";
   data = null;
   sendDataAs = null;
-  ua = `request/1.1.7 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+  ua = `request/1.1.8 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
   reqHeaders = {};
   coreOptions = {};
   timeoutDuration = 30 * seconds;
@@ -148,7 +148,10 @@ var Request = class {
   }
 };
 __name(Request, "Request");
-var request = /* @__PURE__ */ __name((url) => new Request(url), "request");
+function request(url) {
+  return new Request(url);
+}
+__name(request, "request");
 export {
   Request,
   request as default,
