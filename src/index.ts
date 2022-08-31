@@ -1,2 +1,1 @@
-import { Request, UndiciOptions, request } from "./lib/Request";
-export { request, Request, UndiciOptions };
+export { Request, UndiciOptions, request } from "./lib/Request";
