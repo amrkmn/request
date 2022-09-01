@@ -3,6 +3,7 @@ import Dispatcher, { HttpMethod } from "undici/types/dispatcher";
 import undici from "undici";
 import path from "path";
 import { version } from "../../package.json";
+import { IncomingHttpHeaders } from "http";
 
 const defaultRedirectCount = 21;
 const seconds = 1000;
@@ -19,7 +20,7 @@ export class Request {
     private sendDataAs: string | null = null;
     private ua = `request/${version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
 
-    private reqHeaders: Record<string, string> = {};
+    private reqHeaders: Record<string, string> | IncomingHttpHeaders = {};
     private coreOptions: UndiciOptions = {};
 
     private timeoutDuration: number = 30 * seconds;
@@ -64,7 +65,7 @@ export class Request {
         return this;
     }
 
-    header(a1: Record<string, any> | string, a2?: string) {
+    header(a1: string | IncomingHttpHeaders, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((headerName) => {
                 this.reqHeaders[headerName.toLowerCase()] = a1[headerName];
