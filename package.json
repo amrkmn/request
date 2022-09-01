@@ -23,7 +23,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "request": "^2.88.2",
-    "undici": "^4.x"
+    "undici": "^5.x"
   },
   "devDependencies": {
     "@types/node": "^18.7.8",
