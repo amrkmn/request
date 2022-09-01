@@ -37,7 +37,7 @@ var import_undici = __toESM(require("undici"));
 var import_path = __toESM(require("path"));
 
 // package.json
-var version = "1.2.21";
+var version = "0.0.1";
 
 // src/lib/Request.ts
 var defaultRedirectCount = 21;

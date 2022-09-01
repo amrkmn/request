@@ -6,7 +6,7 @@ import undici from "undici";
 import path from "path";
 
 // package.json
-var version = "1.2.21";
+var version = "0.0.1";
 
 // src/lib/Request.ts
 var defaultRedirectCount = 21;

@@ -1,6 +1,6 @@
 {
   "name": "@aytea/request",
-  "version": "1.2.21",
+  "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -13,10 +13,13 @@
     }
   },
   "files": [
-    "dist/*"
+    "dist/*.js*",
+    "dist/*.mjs*",
+    "dist/*.d*"
   ],
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "prepack": "yarn build"
   },
   "keywords": [],
   "author": "AyTea14",
