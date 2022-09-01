@@ -7,17 +7,19 @@ on:
 
 jobs:
     release:
-        name: 🚀 release
+        name: 🚀 Release
         runs-on: ubuntu-latest
         steps:
-            - name: 📚 checkout
+            - name: 📚 Checkout
               uses: actions/checkout@v3
-            - name: 🟢 node
+            - name: 🟢 Node
               uses: actions/setup-node@v3
               with:
                   node-version: 16
                   registry-url: https://registry.npmjs.org
-            - name: 🚀 publish
+            - name: 🛸 Check status
+              run: yarn install
+            - name: 🚀 Publish
               run: npm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
