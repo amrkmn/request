@@ -4,6 +4,11 @@ var __name = (target, value) => __defProp(target, "name", { value, configurable:
 // src/lib/Request.ts
 import undici from "undici";
 import path from "path";
+
+// package.json
+var version = "1.2.2";
+
+// src/lib/Request.ts
 var defaultRedirectCount = 21;
 var seconds = 1e3;
 var Request = class {
@@ -11,7 +16,7 @@ var Request = class {
   httpMethod = "GET";
   data = null;
   sendDataAs = null;
-  ua = `request/1.1.9 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+  ua = `request/${version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
   reqHeaders = {};
   coreOptions = {};
   timeoutDuration = 30 * seconds;
@@ -111,14 +116,17 @@ var Request = class {
   delete() {
     return this.method("DELETE");
   }
-  json() {
+  async json() {
     return this.send().then((res) => res.body.json());
   }
-  raw() {
+  async raw() {
     return this.send().then((res) => res.body.arrayBuffer().then(Buffer.from));
   }
-  text() {
+  async text() {
     return this.send().then((res) => res.body.text());
+  }
+  async blob() {
+    return this.send().then((res) => res.body.blob());
   }
   send() {
     if (this.data) {
@@ -130,14 +138,18 @@ var Request = class {
       }
     }
     this.header("user-agent", this.ua);
-    const req = undici.request(this.url, {
-      body: this.data,
-      method: this.httpMethod,
-      headers: this.reqHeaders,
-      bodyTimeout: this.timeoutDuration,
-      maxRedirections: this.redirectCount,
-      ...this.coreOptions
-    });
+    const options = Object.assign(
+      {
+        body: this.data,
+        method: this.httpMethod,
+        headers: this.reqHeaders,
+        bodyTimeout: this.timeoutDuration,
+        maxRedirections: this.redirectCount,
+        ...this.coreOptions
+      },
+      this.coreOptions
+    );
+    const req = undici.request(this.url, options);
     return req;
   }
   then(...args) {
@@ -154,6 +166,7 @@ function request(url) {
 __name(request, "request");
 export {
   Request,
+  request as default,
   request
 };
 //# sourceMappingURL=index.mjs.map

@@ -1,6 +1,8 @@
+import { Blob } from "buffer";
 import Dispatcher, { HttpMethod } from "undici/types/dispatcher";
 import undici from "undici";
 import path from "path";
+import { version } from "../../package.json";
 
 const defaultRedirectCount = 21;
 const seconds = 1000;
@@ -15,7 +17,7 @@ export class Request {
     private httpMethod: HttpMethod = "GET";
     private data: Record<string, string> | string | null = null;
     private sendDataAs: string | null = null;
-    private ua = `request/1.1.9 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+    private ua = `request/${version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
 
     private reqHeaders: Record<string, string> = {};
     private coreOptions: UndiciOptions = {};
@@ -32,7 +34,7 @@ export class Request {
 
     // OPTIONS
 
-    query(a1: Record<string, string> | string, a2?: string) {
+    query(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((queryKey) => {
                 this.url.searchParams.append(queryKey, a1[queryKey]);
@@ -48,7 +50,7 @@ export class Request {
         return this;
     }
 
-    body(data: Record<string, string> | string | URLSearchParams, sendAs?: string) {
+    body(data: Record<string, any> | string | URLSearchParams, sendAs?: string) {
         if (data instanceof URLSearchParams) this.sendDataAs = "form";
         else
             this.sendDataAs =
@@ -62,7 +64,7 @@ export class Request {
         return this;
     }
 
-    header(a1: Record<string, string> | string, a2?: string) {
+    header(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((headerName) => {
                 this.reqHeaders[headerName.toLowerCase()] = a1[headerName];
@@ -78,13 +80,13 @@ export class Request {
         return this;
     }
 
-    agent(...fragments: any[]) {
+    agent(...fragments: string[]) {
         this.ua = fragments.join(" ");
 
         return this;
     }
 
-    options(a1: Record<string, string> | string, a2?: string) {
+    options<T extends keyof UndiciOptions>(a1: UndiciOptions | T, a2?: UndiciOptions[T]) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((option) => {
                 this.coreOptions[option] = a1[option];
@@ -139,19 +141,23 @@ export class Request {
 
     // RESPONSE MODIFIERS
 
-    json<T = any>(): Promise<T> {
+    async json<T = any>(): Promise<T> {
         return this.send().then((res) => res.body.json());
     }
 
-    raw(): Promise<ArrayBuffer> {
+    async raw(): Promise<Buffer> {
         return this.send().then((res) => res.body.arrayBuffer().then(Buffer.from));
     }
 
-    text(): Promise<string> {
+    async text(): Promise<string> {
         return this.send().then((res) => res.body.text());
     }
 
-    private send(): Promise<Dispatcher.ResponseData> {
+    async blob(): Promise<Blob> {
+        return this.send().then((res) => res.body.blob());
+    }
+
+    send(): Promise<Dispatcher.ResponseData> {
         if (this.data) {
             if (!this.reqHeaders.hasOwnProperty("content-type")) {
                 if (this.sendDataAs === "json") this.reqHeaders["content-type"] = "application/json";
@@ -161,15 +167,19 @@ export class Request {
 
         this.header("user-agent", this.ua);
 
-        const req = undici.request(this.url, {
-            // @ts-ignore
-            body: this.data,
-            method: this.httpMethod,
-            headers: this.reqHeaders,
-            bodyTimeout: this.timeoutDuration,
-            maxRedirections: this.redirectCount,
-            ...this.coreOptions,
-        });
+        const options = Object.assign(
+            {
+                body: this.data,
+                method: this.httpMethod,
+                headers: this.reqHeaders,
+                bodyTimeout: this.timeoutDuration,
+                maxRedirections: this.redirectCount,
+                ...this.coreOptions,
+            },
+            this.coreOptions
+        );
+
+        const req = undici.request(this.url, options);
 
         return req;
     }
@@ -182,7 +192,8 @@ export class Request {
         return this.send().catch(...args);
     }
 }
+
 function request(url: URL | string) {
     return new Request(url);
 }
-export { request };
+export { request, request as default };

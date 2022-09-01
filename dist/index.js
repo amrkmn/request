@@ -27,6 +27,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var src_exports = {};
 __export(src_exports, {
   Request: () => Request,
+  default: () => request,
   request: () => request
 });
 module.exports = __toCommonJS(src_exports);
@@ -34,6 +35,11 @@ module.exports = __toCommonJS(src_exports);
 // src/lib/Request.ts
 var import_undici = __toESM(require("undici"));
 var import_path = __toESM(require("path"));
+
+// package.json
+var version = "1.2.2";
+
+// src/lib/Request.ts
 var defaultRedirectCount = 21;
 var seconds = 1e3;
 var Request = class {
@@ -41,7 +47,7 @@ var Request = class {
   httpMethod = "GET";
   data = null;
   sendDataAs = null;
-  ua = `request/1.1.9 Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+  ua = `request/${version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
   reqHeaders = {};
   coreOptions = {};
   timeoutDuration = 30 * seconds;
@@ -141,14 +147,17 @@ var Request = class {
   delete() {
     return this.method("DELETE");
   }
-  json() {
+  async json() {
     return this.send().then((res) => res.body.json());
   }
-  raw() {
+  async raw() {
     return this.send().then((res) => res.body.arrayBuffer().then(Buffer.from));
   }
-  text() {
+  async text() {
     return this.send().then((res) => res.body.text());
+  }
+  async blob() {
+    return this.send().then((res) => res.body.blob());
   }
   send() {
     if (this.data) {
@@ -160,14 +169,18 @@ var Request = class {
       }
     }
     this.header("user-agent", this.ua);
-    const req = import_undici.default.request(this.url, {
-      body: this.data,
-      method: this.httpMethod,
-      headers: this.reqHeaders,
-      bodyTimeout: this.timeoutDuration,
-      maxRedirections: this.redirectCount,
-      ...this.coreOptions
-    });
+    const options = Object.assign(
+      {
+        body: this.data,
+        method: this.httpMethod,
+        headers: this.reqHeaders,
+        bodyTimeout: this.timeoutDuration,
+        maxRedirections: this.redirectCount,
+        ...this.coreOptions
+      },
+      this.coreOptions
+    );
+    const req = import_undici.default.request(this.url, options);
     return req;
   }
   then(...args) {
