@@ -1,6 +1,6 @@
 {
   "name": "@aytea/request",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -22,6 +22,7 @@
   "author": "AyTea14",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "request": "^2.88.2",
     "undici": "^4.x"
   },
   "devDependencies": {
