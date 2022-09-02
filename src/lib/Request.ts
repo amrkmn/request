@@ -72,7 +72,7 @@ export class Request {
         return this;
     }
     timeout(timeout: number) {
-        this.timeoutDuration = timeout * seconds;
+        this.timeoutDuration = timeout;
 
         return this;
     }
