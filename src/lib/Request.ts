@@ -17,7 +17,9 @@ export class Request {
     private httpMethod: HttpMethod = "GET";
     private data: Record<string, string> | string | null = null;
     private sendDataAs: string | null = null;
-    private ua = `@aytea.request/${version} (+https://npm.im/@aytea/request) Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+    private ua = `@aytea.request/${version} (+https://npm.im/@aytea/request) Node.js/${process.version.slice(
+        1
+    )} (+https://nodejs.org)`;
 
     private reqHeaders: Record<string, string> = {};
     private coreOptions: UndiciOptions = {};
@@ -33,7 +35,6 @@ export class Request {
     }
 
     // OPTIONS
-
     query(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((queryKey) => {
@@ -43,13 +44,11 @@ export class Request {
 
         return this;
     }
-
     path(...relativePaths: string[]) {
         for (const relativePath of relativePaths) this.url.pathname = path.join(this.url.pathname, relativePath);
 
         return this;
     }
-
     body(data: Record<string, any> | string | URLSearchParams, sendAs?: string) {
         if (data instanceof URLSearchParams) this.sendDataAs = "form";
         else
@@ -63,7 +62,6 @@ export class Request {
 
         return this;
     }
-
     header(a1: string | Record<string, any>, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((headerName) => {
@@ -73,19 +71,16 @@ export class Request {
 
         return this;
     }
-
     timeout(timeout: number) {
         this.timeoutDuration = timeout * seconds;
 
         return this;
     }
-
     agent(...fragments: string[]) {
         this.ua = fragments.join(" ");
 
         return this;
     }
-
     options<T extends keyof UndiciOptions>(a1: UndiciOptions | T, a2?: UndiciOptions[T]) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((option) => {
@@ -95,13 +90,11 @@ export class Request {
 
         return this;
     }
-
     auth(token: string, type?: string) {
         this.reqHeaders["authorization"] = type ? `${type} ${token}` : token;
 
         return this;
     }
-
     follow(countOrBool: boolean | number) {
         if (typeof countOrBool === "number") this.redirectCount = countOrBool;
         else if (typeof countOrBool === "boolean")
@@ -118,46 +111,47 @@ export class Request {
 
         return this;
     }
-
     get() {
         return this.method("GET");
     }
-
     post() {
         return this.method("POST");
     }
-
     patch() {
         return this.method("PATCH");
     }
-
     put() {
         return this.method("PUT");
     }
-
     delete() {
         return this.method("DELETE");
     }
 
     // RESPONSE MODIFIERS
-
     async json<T = any>(): Promise<T> {
         return this.send().then((res) => res.body.json());
     }
-
     async raw(): Promise<Buffer> {
         return this.send().then((res) => res.body.arrayBuffer().then(Buffer.from));
     }
-
     async text(): Promise<string> {
         return this.send().then((res) => res.body.text());
     }
-
     async blob(): Promise<Blob> {
         return this.send().then((res) => res.body.blob());
     }
+    async result(): Promise<Dispatcher.ResponseData> {
+        return this.send();
+    }
 
-    send(): Promise<Dispatcher.ResponseData> {
+    then(...args: any[]) {
+        return this.send().then(...args);
+    }
+    catch(...args: any[]) {
+        return this.send().catch(...args);
+    }
+
+    private async send(): Promise<Dispatcher.ResponseData> {
         if (this.data) {
             if (!this.reqHeaders.hasOwnProperty("content-type")) {
                 if (this.sendDataAs === "json") this.reqHeaders["content-type"] = "application/json";
@@ -182,14 +176,6 @@ export class Request {
         const req = undici.request(this.url, options);
 
         return req;
-    }
-
-    then(...args: any[]) {
-        return this.send().then(...args);
-    }
-
-    catch(...args: any[]) {
-        return this.send().catch(...args);
     }
 }
 
