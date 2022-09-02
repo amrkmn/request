@@ -17,7 +17,7 @@ export class Request {
     private httpMethod: HttpMethod = "GET";
     private data: Record<string, string> | string | null = null;
     private sendDataAs: string | null = null;
-    private ua = `request/${version} Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
+    private ua = `@aytea.request/${version} (+https://npm.im/@aytea/request) Node.js/${process.version.slice(1)} (+https://nodejs.org)`;
 
     private reqHeaders: Record<string, string> = {};
     private coreOptions: UndiciOptions = {};
@@ -96,7 +96,7 @@ export class Request {
         return this;
     }
 
-    auth(token: string, type = "Bearer") {
+    auth(token: string, type?: string) {
         this.reqHeaders["authorization"] = type ? `${type} ${token}` : token;
 
         return this;
