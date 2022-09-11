@@ -8,8 +8,7 @@ const defaultRedirectCount = 21;
 const seconds = 1000;
 
 export type UndiciOptions = Partial<
-    { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> &
-        Partial<Pick<Dispatcher.RequestOptions, "method">>
+    Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> & Partial<Pick<Dispatcher.RequestOptions, "method">>
 >;
 
 export class Request {
@@ -35,6 +34,9 @@ export class Request {
     }
 
     // OPTIONS
+
+    query(obj: Record<string, any>): this;
+    query(name: string, value: string): this;
     query(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((queryKey) => {
@@ -62,7 +64,10 @@ export class Request {
 
         return this;
     }
-    header(a1: string | Record<string, any>, a2?: string) {
+
+    header(obj: Record<string, any>): this;
+    header(name: string, value: string): this;
+    header(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((headerName) => {
                 this.reqHeaders[headerName.toLowerCase()] = a1[headerName];
@@ -81,6 +86,9 @@ export class Request {
 
         return this;
     }
+
+    options(obj: UndiciOptions): this;
+    options<T extends keyof UndiciOptions>(key: T, value: UndiciOptions[T]): this;
     options<T extends keyof UndiciOptions>(a1: UndiciOptions | T, a2?: UndiciOptions[T]) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((option) => {
@@ -131,8 +139,11 @@ export class Request {
     async json<T = any>(): Promise<T> {
         return this.send().then((res) => res.body.json());
     }
-    async raw(): Promise<Buffer> {
+    async buffer(): Promise<Buffer> {
         return this.send().then((res) => res.body.arrayBuffer().then(Buffer.from));
+    }
+    async arrayBuffer(): Promise<ArrayBuffer> {
+        return this.send().then((res) => res.body.arrayBuffer());
     }
     async text(): Promise<string> {
         return this.send().then((res) => res.body.text());
