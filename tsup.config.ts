@@ -5,6 +5,7 @@ export default defineConfig({
     clean: true,
     entry: ["src/*.ts"],
     format: ["esm", "cjs"],
+    outDir: "./dist",
     minify: false,
     skipNodeModulesBundle: true,
     sourcemap: true,
@@ -12,5 +13,4 @@ export default defineConfig({
     keepNames: true,
     splitting: false,
     shims: false,
-    // bundle: false,
 });

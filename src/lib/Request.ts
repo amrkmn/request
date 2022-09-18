@@ -1,4 +1,3 @@
-import { Blob } from "buffer";
 import Dispatcher, { HttpMethod } from "undici/types/dispatcher";
 import undici from "undici";
 import path from "path";
@@ -65,9 +64,9 @@ export class Request {
         return this;
     }
 
-    header(obj: Record<string, any>): this;
-    header(name: string, value: string): this;
-    header(a1: Record<string, any> | string, a2?: string) {
+    headers(obj: Record<string, any>): this;
+    headers(name: string, value: string): this;
+    headers(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((headerName) => {
                 this.reqHeaders[headerName.toLowerCase()] = a1[headerName];
@@ -139,29 +138,21 @@ export class Request {
     async json<T = any>(): Promise<T> {
         return this.send().then((res) => res.body.json());
     }
-    async buffer(): Promise<Buffer> {
+    async buffer() {
         return this.send().then((res) => res.body.arrayBuffer().then(Buffer.from));
     }
-    async arrayBuffer(): Promise<ArrayBuffer> {
+    async arrayBuffer() {
         return this.send().then((res) => res.body.arrayBuffer());
     }
-    async text(): Promise<string> {
+    async text() {
         return this.send().then((res) => res.body.text());
     }
-    async blob(): Promise<Blob> {
+    async blob() {
         return this.send().then((res) => res.body.blob());
     }
-    async result(): Promise<Dispatcher.ResponseData> {
+    async result() {
         return this.send();
     }
-
-    then(...args: any[]) {
-        return this.send().then(...args);
-    }
-    catch(...args: any[]) {
-        return this.send().catch(...args);
-    }
-
     private async send(): Promise<Dispatcher.ResponseData> {
         if (this.data) {
             if (!this.reqHeaders.hasOwnProperty("content-type")) {
@@ -170,7 +161,7 @@ export class Request {
             }
         }
 
-        this.header("user-agent", this.ua);
+        this.headers("user-agent", this.ua);
 
         const options = Object.assign(
             {
@@ -187,6 +178,13 @@ export class Request {
         const req = undici.request(this.url, options);
 
         return req;
+    }
+
+    then(onfulfilled?: (value: Dispatcher.ResponseData) => any) {
+        return this.send().then(onfulfilled);
+    }
+    catch(onrejected?: (reason: any) => any) {
+        return this.send().catch(onrejected);
     }
 }
 

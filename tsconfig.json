@@ -3,7 +3,7 @@
         "allowSyntheticDefaultImports": true,
         "moduleResolution": "Node",
         "resolveJsonModule": true,
-        "target": "ESNext",
+        "target": "ESNext"
     },
     "include": ["src"]
 }
