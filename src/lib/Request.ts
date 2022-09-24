@@ -7,7 +7,8 @@ const defaultRedirectCount = 21;
 const seconds = 1000;
 
 export type UndiciOptions = Partial<
-    Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> & Partial<Pick<Dispatcher.RequestOptions, "method">>
+    { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> &
+        Partial<Pick<Dispatcher.RequestOptions, "method">>
 >;
 
 export class Request {
@@ -33,7 +34,6 @@ export class Request {
     }
 
     // OPTIONS
-
     query(obj: Record<string, any>): this;
     query(name: string, value: string): this;
     query(a1: Record<string, any> | string, a2?: string) {
@@ -50,20 +50,22 @@ export class Request {
 
         return this;
     }
+    body(data: Record<string, any>, sendAs?: string): this;
+    body(data: string, sendAs?: string): this;
+    body(data: URLSearchParams, sendAs?: string): this;
     body(data: Record<string, any> | string | URLSearchParams, sendAs?: string) {
         if (data instanceof URLSearchParams) this.sendDataAs = "form";
         else
             this.sendDataAs =
                 typeof data === "object" && !sendAs && !Buffer.isBuffer(data) ? "json" : sendAs ? sendAs.toLowerCase() : "buffer";
 
-        if (data instanceof URLSearchParams) this.data = new URLSearchParams(data).toString();
+        if (data instanceof URLSearchParams) this.data = data.toString();
         else if (this.sendDataAs === "form" && typeof data === "object") this.data = new URLSearchParams(data).toString();
         else if (this.sendDataAs === "json") this.data = JSON.stringify(data);
         else this.data = data;
 
         return this;
     }
-
     headers(obj: Record<string, any>): this;
     headers(name: string, value: string): this;
     headers(a1: Record<string, any> | string, a2?: string) {
@@ -85,7 +87,6 @@ export class Request {
 
         return this;
     }
-
     options(obj: UndiciOptions): this;
     options<T extends keyof UndiciOptions>(key: T, value: UndiciOptions[T]): this;
     options<T extends keyof UndiciOptions>(a1: UndiciOptions | T, a2?: UndiciOptions[T]) {
@@ -112,7 +113,6 @@ export class Request {
     }
 
     // HTTP METHODS
-
     method(method: HttpMethod) {
         this.httpMethod = method;
 
