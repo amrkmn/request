@@ -2,6 +2,7 @@ import Dispatcher, { HttpMethod } from "undici/types/dispatcher";
 import undici from "undici";
 import path from "path";
 import { version } from "../../package.json";
+import { normalizeArray, RestOrArray } from "./utils";
 
 const defaultRedirectCount = 21;
 const seconds = 1000;
@@ -45,8 +46,10 @@ export class Request {
 
         return this;
     }
-    path(...relativePaths: string[]) {
-        for (const relativePath of relativePaths) this.url.pathname = path.join(this.url.pathname, relativePath);
+    path(...relativePaths: RestOrArray<string>) {
+        for (const relativePath of [...normalizeArray(relativePaths)]) {
+            this.url.pathname = path.join(this.url.pathname, relativePath);
+        }
 
         return this;
     }
@@ -82,8 +85,8 @@ export class Request {
 
         return this;
     }
-    agent(...fragments: string[]) {
-        this.ua = fragments.join(" ");
+    agent(...fragments: RestOrArray<string>) {
+        this.ua = [...normalizeArray(fragments)].join(" ");
 
         return this;
     }
