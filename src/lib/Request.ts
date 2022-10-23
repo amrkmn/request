@@ -15,7 +15,7 @@ export type UndiciOptions = Partial<
 export class Request {
     private url: URL;
     private httpMethod: HttpMethod = "GET";
-    private data: Record<string, string> | string | null = null;
+    private data: Record<string, any> | string | null = null;
     private sendDataAs: string | null = null;
     private ua = `@aytea.request/${version} (+https://npm.im/@aytea/request) Node.js/${process.version.slice(
         1
@@ -69,9 +69,9 @@ export class Request {
 
         return this;
     }
-    headers(obj: Record<string, any>): this;
-    headers(name: string, value: string): this;
-    headers(a1: Record<string, any> | string, a2?: string) {
+    header(obj: Record<string, any>): this;
+    header(name: string, value: string): this;
+    header(a1: Record<string, any> | string, a2?: string) {
         if (typeof a1 === "object") {
             Object.keys(a1).forEach((headerName) => {
                 this.reqHeaders[headerName.toLowerCase()] = a1[headerName];
@@ -164,7 +164,7 @@ export class Request {
             }
         }
 
-        this.headers("user-agent", this.ua);
+        this.agent(this.ua);
 
         const options = Object.assign(
             {
