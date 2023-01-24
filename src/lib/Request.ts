@@ -1,9 +1,10 @@
 import Dispatcher, { HttpMethod } from "undici/types/dispatcher";
 import undici from "undici";
-import path from "path";
-import { version } from "../../package.json";
+import { resolve, join } from "path";
 import { normalizeArray, RestOrArray } from "./utils";
+import { readFileSync } from "fs";
 
+const version = Reflect.get(JSON.parse(readFileSync(resolve(process.cwd(), "package.json")).toString()), "version");
 const defaultRedirectCount = 21;
 const seconds = 1000;
 
@@ -48,7 +49,7 @@ export class Request {
     }
     path(...relativePaths: RestOrArray<string>) {
         for (const relativePath of [...normalizeArray(relativePaths)]) {
-            this.url.pathname = path.join(this.url.pathname, relativePath);
+            this.url.pathname = join(this.url.pathname, relativePath);
         }
 
         return this;
