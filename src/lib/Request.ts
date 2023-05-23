@@ -1,12 +1,10 @@
-import Dispatcher, { HttpMethod } from "undici/types/dispatcher";
-import undici from "undici";
-import { resolve, join } from "path";
-import { normalizeArray, RestOrArray } from "./utils";
-import { readFileSync } from "fs";
+import { join } from "path";
+import undici, { Dispatcher } from "undici";
+import { RestOrArray, normalizeArray } from "./utils";
 
-const version = Reflect.get(JSON.parse(readFileSync(resolve(process.cwd(), "package.json")).toString()), "version");
-const defaultRedirectCount = 21;
-const seconds = 1000;
+const VERSION = "[VI]{{inject}}[/VI]";
+const DEFAULT_REDIRECT_COUNT = 21;
+const SECONDS = 1000;
 
 export type UndiciOptions = Partial<
     { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, "origin" | "path" | "method"> &
@@ -15,18 +13,18 @@ export type UndiciOptions = Partial<
 
 export class Request {
     private url: URL;
-    private httpMethod: HttpMethod = "GET";
+    private httpMethod: Dispatcher.HttpMethod = "GET";
     private data: Record<string, any> | string | null = null;
     private sendDataAs: string | null = null;
-    private ua = `@aytea.request/${version} (+https://npm.im/@aytea/request) Node.js/${process.version.slice(
+    private ua = `@aytea.request/${VERSION} (+https://npm.im/@aytea/request) Node.js/${process.version.slice(
         1
     )} (+https://nodejs.org)`;
 
     private reqHeaders: Record<string, string> = {};
     private coreOptions: UndiciOptions = {};
 
-    private timeoutDuration: number = 30 * seconds;
-    private redirectCount: number = defaultRedirectCount;
+    private timeoutDuration: number = 30 * SECONDS;
+    private redirectCount: number = DEFAULT_REDIRECT_COUNT;
     constructor(url: URL | string) {
         try {
             this.url = url instanceof URL ? url : typeof url === "string" ? new URL(url) : new URL(url);
@@ -64,7 +62,8 @@ export class Request {
                 typeof data === "object" && !sendAs && !Buffer.isBuffer(data) ? "json" : sendAs ? sendAs.toLowerCase() : "buffer";
 
         if (data instanceof URLSearchParams) this.data = data.toString();
-        else if (this.sendDataAs === "form" && typeof data === "object") this.data = new URLSearchParams(data).toString();
+        else if (this.sendDataAs === "form" && typeof data === "object" && !Buffer.isBuffer(data))
+            this.data = new URLSearchParams(data).toString();
         else if (this.sendDataAs === "json") this.data = JSON.stringify(data);
         else this.data = data;
 
@@ -110,14 +109,14 @@ export class Request {
     follow(countOrBool: boolean | number) {
         if (typeof countOrBool === "number") this.redirectCount = countOrBool;
         else if (typeof countOrBool === "boolean")
-            if (countOrBool) this.redirectCount = defaultRedirectCount;
+            if (countOrBool) this.redirectCount = DEFAULT_REDIRECT_COUNT;
             else this.redirectCount = 0;
 
         return this;
     }
 
     // HTTP METHODS
-    method(method: HttpMethod) {
+    method(method: Dispatcher.HttpMethod) {
         this.httpMethod = method;
 
         return this;
@@ -195,4 +194,4 @@ export class Request {
 function request(url: URL | string) {
     return new Request(url);
 }
-export { request, request as default };
+export { request, request as default, VERSION as version };

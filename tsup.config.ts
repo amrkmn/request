@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import { esbuildPluginVersionInjector } from "esbuild-plugin-version-injector";
 
 export default defineConfig({
     dts: true,
@@ -13,4 +14,5 @@ export default defineConfig({
     keepNames: true,
     splitting: false,
     shims: false,
+    esbuildPlugins: [esbuildPluginVersionInjector()],
 });

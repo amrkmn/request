@@ -1,1 +1,1 @@
-export { Request, UndiciOptions, request, default } from "./lib/Request";
+export { Request, UndiciOptions, request, default, version } from "./lib/Request";

@@ -1,6 +1,6 @@
 {
   "name": "@aytea/request",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -29,10 +29,11 @@
   "author": "AyTea14",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "undici": "5.10.0"
+    "undici": "^5.22.1"
   },
   "devDependencies": {
     "@types/node": "^18.7.8",
+    "esbuild-plugin-version-injector": "^1.1.0",
     "tsup": "^6.2.2",
     "typescript": "^4.7.4"
   }
