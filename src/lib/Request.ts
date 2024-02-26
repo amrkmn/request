@@ -164,7 +164,7 @@ export class Request {
             }
         }
 
-        this.agent(this.ua);
+        this.header("user-agent", this.ua);
 
         const options = Object.assign(
             {
